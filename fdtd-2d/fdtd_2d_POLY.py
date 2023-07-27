@@ -117,8 +117,8 @@ def kernel_fdtd_2d_diff(tmax: int, nx: int, ny: int, ex: torch.Tensor, ey: torch
         
 def kernel_fdtd_2d_roll(tmax: int, nx: int, ny: int, ex: torch.Tensor, ey: torch.Tensor, hz: torch.Tensor, _fict_: torch.Tensor) -> tuple:
     print(f"Timesteps: {_get_progress_string(0)} 0/{tmax} 0.000s", end='\r')
-    start_time = perf_counter()
     for t in range(tmax):
+        start_time = perf_counter()
         # Assign _fict_[t] to the first row of ey
         ey[0, :] = _fict_[t]
 
@@ -131,16 +131,18 @@ def kernel_fdtd_2d_roll(tmax: int, nx: int, ny: int, ex: torch.Tensor, ey: torch
         # Update hz using torch.roll
         hz[:-1, :-1] = hz[:-1, :-1] - 0.7 * (ex[:-1, 1:] - ex[:-1, :-1] + ey[1:, :-1] - ey[:-1, :-1])
         
-        print(f"Timesteps: {_get_progress_string((t+1)/tmax)} {t+1}/{tmax} {round((perf_counter()-start_time), 3)}s   ", end='\r')
+        total_time += perf_counter() - start_time
+        print(f"Timesteps: {_get_progress_string((t+1)/tmax)} {t+1}/{tmax} {round((total_time), 3)}s   ", end='\r')
     print("\n")
 
     return ex, ey, hz
         
 def kernel_fdtd_2d_index_shift(tmax: int, nx: int, ny: int, ex: torch.Tensor, ey: torch.Tensor, hz: torch.Tensor, _fict_: torch.Tensor) -> tuple:
     print(f"Timesteps: {_get_progress_string(0)} 0/{tmax} 0.000s", end='\r')
-    start_time = perf_counter()
+    total_time = 0
     # Additional implementation using torch.flip
     for t in range(tmax):
+        start_time = perf_counter()
         # Assign _fict_[t] to the first row of ey
         ey[0, :] = _fict_[t]
 
@@ -157,7 +159,8 @@ def kernel_fdtd_2d_index_shift(tmax: int, nx: int, ny: int, ex: torch.Tensor, ey
         # Update hz using tensor operations
         hz[:-1, :-1] -= 0.7 * (ex_shifted - ex[:-1, :-1] + ey_shifted - ey[:-1, :-1])
 
-        print(f"Timesteps: {_get_progress_string((t+1)/tmax)} {t+1}/{tmax} {round((perf_counter()-start_time), 3)}s   ", end='\r')
+        total_time += perf_counter() - start_time
+        print(f"Timesteps: {_get_progress_string((t+1)/tmax)} {t+1}/{tmax} {round((total_time), 3)}s   ", end='\r')
     print("\n")
         
     return ex, ey, hz

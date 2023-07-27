@@ -166,6 +166,9 @@ def kernel_conv3d_roll(ni: int, nj: int, nk: int, A: torch.Tensor) -> torch.Tens
          [0, 0, 10]]
     ], dtype=torch.float64)
     
+    print(f"Operations: {_get_progress_string(0)} 0/1 0.000s", end='\r')
+    start_time = perf_counter()
+    
     A[1:-1, 1:-1, 1:-1] = (
         A[:-2, :-2, :-2] * kernel[0, 0, 0] +
         A[:-2, :-2, 2:] * kernel[0, 0, 2] +
@@ -181,6 +184,9 @@ def kernel_conv3d_roll(ni: int, nj: int, nk: int, A: torch.Tensor) -> torch.Tens
         A[2:, 1:-1, 2:] * kernel[2, 1, 2] +
         A[2:, 2:, 2:] * kernel[2, 2, 2]
     )
+    
+    print(f"Operations: {_get_progress_string(1)} 1/1 {round((perf_counter()-start_time), 3)}s   ", end='\r')
+    print("\n")
                 
     return A
 

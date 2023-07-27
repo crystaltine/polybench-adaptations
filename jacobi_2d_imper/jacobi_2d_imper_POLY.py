@@ -79,6 +79,7 @@ def jacobi_2d_imper_imp4(tsteps: int, initial: torch.Tensor) -> torch.Tensor:
         kernel_flat = kernel.flatten().view(-1, 1)
 
         # Calculate the result only for the interior elements
+        # torch.matmul using incorrect shapes
         result = (interior + 0.2 * torch.matmul(kernel_flat, neighbors)).reshape(initial[1:-1, 1:-1].shape)
         initial[1:-1, 1:-1] = result
         print(f"Timesteps: {_get_progress_string((_+1)/tsteps)} {_+1}/{tsteps} {round((perf_counter()-start_time), 3)}s   ", end='\r')
