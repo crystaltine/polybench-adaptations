@@ -1,10 +1,12 @@
-from lu_POLY import (
+from lu_POLY_verbose import (
     init_array,
     kernel_lu_original,
     kernel_lu_slicing,
     kernel_lu_tril,
-    kernel_lu_arange_calc,
-    kernel_lu_torchapi
+    kernel_lu_arange_calc_TEST,
+    kernel_lu_torchapi,
+    kernel_lu_nofor,
+    lu_decomposition_partial_pivoting
 )
 
 def format_2d_list(li: list) -> str:
@@ -90,15 +92,16 @@ print(COLOR_CODE_DIM + "Creating arrays..." + RESET)
 
 ORIGINAL_A = init_array(N)
 
-TEST_AGAINST = kernel_lu_original
+TEST_AGAINST = kernel_lu_torchapi
 TEST_FUNCTIONS: list = [
     kernel_lu_slicing,
-    kernel_lu_arange_calc,
-    kernel_lu_torchapi,
-    kernel_lu_tril
+    kernel_lu_arange_calc_TEST,
+    kernel_lu_tril,
+    kernel_lu_nofor,
+    lu_decomposition_partial_pivoting
 ]
 
-print(colorama.Fore.CYAN + "Running original kernel..." + colorama.Style.RESET_ALL)
+print(colorama.Fore.CYAN + "Running original kernel (Torch API)..." + colorama.Style.RESET_ALL)
 
 accepted_value = deepcopy(ORIGINAL_A)
 TEST_AGAINST(N, accepted_value)

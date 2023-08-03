@@ -1,10 +1,14 @@
-from cholesky_POLY import (
+from cholesky_POLY_verbose import (
     init_array_fixed,
     kernel_cholesky_formula,
     kernel_cholesky_original,
     kernel_cholesky_slicing,
     kernel_cholesky_torchapi,
-    kernel_cholesky_algorithm_w1
+    kernel_cholesky_algorithm_w1,
+    kernel_cholesky_banachiewicz_for,
+    kernel_cholesky_banachiewicz_nofor,
+    kernel_cholesky_crout,
+    kernel_cholesky_banachiewicz_nofor_optim
 )
 
 def format_2d_list(li: list) -> str:
@@ -94,7 +98,11 @@ TEST_FUNCTIONS: list = [
     kernel_cholesky_torchapi,
     kernel_cholesky_slicing,
     kernel_cholesky_formula,
-    kernel_cholesky_algorithm_w1
+    kernel_cholesky_algorithm_w1,
+    kernel_cholesky_banachiewicz_for,
+    kernel_cholesky_banachiewicz_nofor,
+    kernel_cholesky_banachiewicz_nofor_optim,
+    kernel_cholesky_crout,  
 ]
 
 print(colorama.Fore.CYAN + "Running original kernel..." + colorama.Style.RESET_ALL)
@@ -128,6 +136,7 @@ for result_index in range(len(return_values)):
     # Float inaccuracy
     elif not torch.allclose(accepted_value, return_values[result_index], rtol=1e-03, atol=1e-03):
         print(colorama.Fore.YELLOW + f"\x1B[4mTest case failed: Incorrect." + colorama.Style.RESET_ALL)
+        print(colorama.Fore.CYAN + f"Input Value:\n{format_2d_list(ORIGINAL_A.tolist())}" + colorama.Style.RESET_ALL)
         print(colorama.Fore.GREEN + f"Accepted value:\n{format_2d_list(accepted_value.tolist())}" + colorama.Style.RESET_ALL)
         print(colorama.Fore.RED + f"Result value:\n{format_2d_list(return_values[result_index].tolist())}\n" + colorama.Style.RESET_ALL)
     else:
